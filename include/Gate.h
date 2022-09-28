@@ -9,8 +9,16 @@
 #define GATE_H_
 
 class Gate {
-public:
-	Gate();
+	private:
+		unsigned int id;
+		static unsigned int idGenerator;
+		static std::map<unsigned int, Gate *> gateLookup;
+	public:
+		Gate();
+		~Gate();
+
+	public:
+		static bool getGate(unsigned int gateID, Gate *outNode);
 };
 
 #endif /* GATE_H_ */

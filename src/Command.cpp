@@ -5,6 +5,9 @@
  *      Author: Master
  */
 
+#include <string>
+#include <map>
+
 #include "Command.h"
 
 std::map<std::string, Command_t> Command::commandMap{

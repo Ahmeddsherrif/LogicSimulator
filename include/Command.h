@@ -8,8 +8,7 @@
 #ifndef COMMAND_H_
 #define COMMAND_H_
 
-#include <string>
-#include <map>
+
 
 enum Command_t {
 	AND_COMMAND,
