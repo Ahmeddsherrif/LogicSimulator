@@ -5,11 +5,11 @@
   <class name="StringParse" superclass="qpn::QActive">
    <statechart properties="0x00">
     <initial target="../1">
-     <initial_glyph conn="10,15,4,3,12,13">
+     <initial_glyph conn="6,16,4,3,11,6">
       <action box="2,-3,10,2"/>
      </initial_glyph>
     </initial>
-    <state name="GET_FIRST_COMMAND">
+    <state name="EXECUTE_COMMAND">
      <entry brief="ParseCommand"/>
      <tran trig="AND_COMMAND" target="../../2">
       <tran_glyph conn="42,27,1,3,28">
@@ -26,8 +26,8 @@
        <action box="0,-2,13,3"/>
       </tran_glyph>
      </tran>
-     <tran trig="SIM_COMMAND">
-      <tran_glyph conn="23,36,3,-1,7">
+     <tran trig="SIM_COMMAND" target="../../6">
+      <tran_glyph conn="42,85,1,3,58">
        <action box="-12,-2,12,4"/>
       </tran_glyph>
      </tran>
@@ -36,26 +36,68 @@
        <action box="0,-2,13,4"/>
       </tran_glyph>
      </tran>
-     <state_glyph node="23,19,19,53">
+     <state_glyph node="12,19,30,70">
       <entry box="1,2,14,6"/>
      </state_glyph>
     </state>
     <state name="ADD_NODE">
-     <state_glyph node="70,24,19,25"/>
-    </state>
-    <state name="SET_NODE">
-     <tran trig="TRIG1" target="../../5">
-      <tran_glyph conn="89,57,1,3,10">
+     <entry brief="parse_node"/>
+     <tran trig="TRIG1">
+      <choice target="../../../6">
+       <guard brief="else"/>
+       <choice_glyph conn="106,40,5,1,12,45,-2">
+        <action box="8,-2,10,4"/>
+       </choice_glyph>
+      </choice>
+      <choice target="../..">
+       <guard brief="buffer &gt; 0"/>
+       <choice_glyph conn="106,40,4,1,6,-17">
+        <action box="-3,-3,10,2"/>
+       </choice_glyph>
+      </choice>
+      <tran_glyph conn="89,40,1,-1,17">
        <action box="0,-2,10,2"/>
       </tran_glyph>
      </tran>
-     <state_glyph node="70,52,19,11"/>
+     <state_glyph node="70,24,19,25">
+      <entry box="1,2,14,6"/>
+     </state_glyph>
+    </state>
+    <state name="SET_NODE">
+     <entry brief="parse_node"/>
+     <tran trig="TRIG1" target="../../5">
+      <tran_glyph conn="89,57,1,3,10">
+       <action box="2,-2,10,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="70,52,19,11">
+      <entry box="1,2,13,5"/>
+     </state_glyph>
     </state>
     <state name="OUT_NODE">
-     <state_glyph node="70,65,19,10"/>
+     <entry brief="parse_node"/>
+     <tran trig="TRIG1" target="../../6">
+      <tran_glyph conn="89,70,1,0,16,11">
+       <action box="0,-2,10,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="70,65,19,10">
+      <entry box="1,2,17,6"/>
+     </state_glyph>
     </state>
     <state name="SET_VALUE">
-     <state_glyph node="99,52,16,11"/>
+     <entry brief="parse_value"/>
+     <tran trig="TRIG1" target="../../6">
+      <tran_glyph conn="111,63,2,0,18">
+       <action box="0,-2,10,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="99,52,16,11">
+      <entry box="1,2,12,6"/>
+     </state_glyph>
+    </state>
+    <state name="END_LINE">
+     <state_glyph node="100,81,16,10"/>
     </state>
     <state_diagram size="123,93"/>
    </statechart>
