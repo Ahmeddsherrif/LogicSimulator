@@ -33,10 +33,10 @@ class GateGenerator {
 	private:
 		static std::vector<std::string> split_string(const std::string &s, const char &delim);
 
-		static Error_t create_gate(const Gate_t &gateType, std::unique_ptr<Gate> &outGate);
-		static Error_t create_node(std::string nodeName, std::unique_ptr<Gate> &gate, std::unique_ptr<Node> &outNode);
+		static Error_t create_gate(const Gate_t &gateType, Gate *outGate);
+		static Error_t create_node(std::string nodeName, Gate *gate, Node *outNode);
 
-		static Error_t set_node(std::unique_ptr<Node> &node, std::string nodeValue);
+		static Error_t set_node(Node *node, std::string nodeValue);
 		static Error_t out_node(std::string nodeToOutput);
 
 		static void start_simulation();

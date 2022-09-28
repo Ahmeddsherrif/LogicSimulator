@@ -11,7 +11,7 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <memory>
+//#include <memory>
 
 #include "Gate.h"
 #include "Node.h"
