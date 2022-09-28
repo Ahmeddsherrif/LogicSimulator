@@ -11,6 +11,9 @@
 #include <vector>
 #include <string>
 
+#include "Gate.h"
+#include "Node.h"
+
 enum State_t {
 	EXECUTE_COMMAND_STATE,
 
@@ -30,6 +33,13 @@ enum Gate_t {
 	OR_GATE
 };
 
+enum Error_t{
+	NO_ERROR,
+	CREATE_NODE_ERROR,
+	SET_NODE_ERROR,
+	CREATE_GATE_ERROR
+};
+
 
 class GateGenerator {
 
@@ -37,14 +47,19 @@ class GateGenerator {
 		static std::string inputString;
 		static const char stringDelimeter;
 		static std::vector<std::string> buffer;
+
 		static State_t state;
+		static Error_t error;
+
+		static Node currentNode;
+		static Gate currentGate;
 
 	private:
 		static std::vector<std::string> split_string(const std::string &s, const char &delim);
-		static void create_gate(Gate_t gateType);
-		static void create_node(std::string nodeName);
-		static void out_node(std::string nodeName);
-		static void set_node(std::string nodeName, std::string nodeValue);
+		static void create_gate(const Gate_t& gateType, Gate& outGate);
+		static Error_t create_node(std::string nodeName, Gate& gate, Node& outNode);
+		static Error_t out_node(std::string nodeToDisplay);
+		static Error_t set_node(Node node, std::string nodeValue);
 		static void start_simulation();
 
 	public:
