@@ -17,14 +17,15 @@ enum Command_t {
 	SET_COMMAND,
 	SIM_COMMAND,
 	OUT_COMMAND,
-	INVALID_INPUT
+	TERMINATE_COMMAND,
+	INVALID_COMMAND
 };
 
 class Command {
 	private:
 		static std::map<std::string, Command_t> commandMap;
 	public:
-		static Command_t get_command(const std::string& s);
+		static Command_t string_to_command(const std::string& s);
 };
 
 #endif /* COMMAND_H_ */

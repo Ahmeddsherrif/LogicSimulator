@@ -5,35 +5,59 @@
   <class name="StringParse" superclass="qpn::QActive">
    <statechart properties="0x00">
     <initial target="../1">
-     <initial_glyph conn="11,15,4,3,12,12">
+     <initial_glyph conn="10,15,4,3,12,13">
       <action box="2,-3,10,2"/>
      </initial_glyph>
     </initial>
     <state name="GET_FIRST_COMMAND">
      <entry brief="ParseCommand"/>
      <tran trig="AND_COMMAND" target="../../2">
-      <tran_glyph conn="42,27,1,3,26">
+      <tran_glyph conn="42,27,1,3,28">
        <action box="0,-2,15,2"/>
       </tran_glyph>
      </tran>
      <tran trig="OR_COMMAND" target="../../2">
-      <tran_glyph conn="42,32,1,3,26">
+      <tran_glyph conn="42,32,1,3,28">
        <action box="0,-2,13,2"/>
       </tran_glyph>
      </tran>
-     <tran trig="SET_COMMAND" target="../../2">
-      <tran_glyph conn="42,42,1,3,26">
+     <tran trig="SET_COMMAND" target="../../3">
+      <tran_glyph conn="42,60,1,3,28">
        <action box="0,-2,13,3"/>
       </tran_glyph>
      </tran>
-     <state_glyph node="23,19,19,33">
+     <tran trig="SIM_COMMAND">
+      <tran_glyph conn="23,36,3,-1,7">
+       <action box="-12,-2,12,4"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="OUT_COMMAND" target="../../4">
+      <tran_glyph conn="42,70,1,3,28">
+       <action box="0,-2,13,4"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="23,19,19,53">
       <entry box="1,2,14,6"/>
      </state_glyph>
     </state>
-    <state name="GET_NODE">
-     <state_glyph node="68,19,19,34"/>
+    <state name="ADD_NODE">
+     <state_glyph node="70,24,19,25"/>
     </state>
-    <state_diagram size="123,69"/>
+    <state name="SET_NODE">
+     <tran trig="TRIG1" target="../../5">
+      <tran_glyph conn="89,57,1,3,10">
+       <action box="0,-2,10,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="70,52,19,11"/>
+    </state>
+    <state name="OUT_NODE">
+     <state_glyph node="70,65,19,10"/>
+    </state>
+    <state name="SET_VALUE">
+     <state_glyph node="99,52,16,11"/>
+    </state>
+    <state_diagram size="123,93"/>
    </statechart>
   </class>
  </package>

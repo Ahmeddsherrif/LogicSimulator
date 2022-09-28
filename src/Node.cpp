@@ -5,9 +5,24 @@
  *      Author: Master
  */
 
+#include <string>
+
 #include "Node.h"
 
-Node::~Node() {
-	// TODO Auto-generated destructor stub
+
+std::string Node::getName() const {
+	return name;
 }
 
+void Node::setName(char name) {
+	this->name = name;
+}
+
+bool Node::isValue() const {
+	return value;
+}
+
+
+void Node::setValue(bool value) {
+	this->value = value;
+}
