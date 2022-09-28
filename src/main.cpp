@@ -11,23 +11,16 @@
 #include <string>
 #include <vector>
 #include <map>
-
-
-
-//#define TRACE_MACRO
-//
-//#if (TRACE_MACRO == 1)
-//	#define PRINT(something) std::cout << something << std::endl;
-//#else
-//	#define PRINT(something)
-//#endif
+#include <memory>
 
 #include "Gate.h"
 #include "Node.h"
 #include "GateGenerator.h"
 
+
 int main() {
 	std::string inputString;
+
 
 	do {
 		std::getline(std::cin, inputString);

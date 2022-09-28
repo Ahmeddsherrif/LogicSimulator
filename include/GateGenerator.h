@@ -8,46 +8,35 @@
 #ifndef GATEGENERATOR_H_
 #define GATEGENERATOR_H_
 
-
 enum State_t {
 	EXECUTE_COMMAND_STATE,
 
-	ADD_NODE_STATE,
-	SET_NODE_STATE,
-	OUT_NODE_STATE,
+	ADD_NODE_STATE, SET_NODE_STATE, OUT_NODE_STATE,
 
 	SET_VALUE_STATE,
 
 	ERROR_STATE,
 
-	END_LINE_STATE,
-	END_PARSE_STATE
+	END_LINE_STATE, END_PARSE_STATE
 };
 
 enum Gate_t {
-	AND_GATE,
-	OR_GATE
+	AND_GATE, OR_GATE
 };
 
-enum Error_t{
-	NO_ERROR,
-	SET_NODE_ERROR,
-	CREATE_NODE_ERROR,
-	OUT_NODE_ERROR
+enum Error_t {
+	NO_ERROR, SET_NODE_ERROR, CREATE_NODE_ERROR, OUT_NODE_ERROR
 };
-
 
 class GateGenerator {
-
-
 
 	private:
 		static std::vector<std::string> split_string(const std::string &s, const char &delim);
 
-		static Error_t create_gate(const Gate_t& gateType, Gate *outGate);
-		static Error_t create_node(std::string nodeName, Gate *gate, Node *outNode);
+		static Error_t create_gate(const Gate_t &gateType, std::unique_ptr<Gate> &outGate);
+		static Error_t create_node(std::string nodeName, std::unique_ptr<Gate> &gate, std::unique_ptr<Node> &outNode);
 
-		static Error_t set_node(Node *node, std::string nodeValue);
+		static Error_t set_node(std::unique_ptr<Node> &node, std::string nodeValue);
 		static Error_t out_node(std::string nodeToOutput);
 
 		static void start_simulation();

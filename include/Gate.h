@@ -8,6 +8,7 @@
 #ifndef GATE_H_
 #define GATE_H_
 
+
 class Gate {
 	private:
 		unsigned int id;

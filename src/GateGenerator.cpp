@@ -9,6 +9,7 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <memory>
 
 #include "Command.h"
 #include "Gate.h"
@@ -16,30 +17,30 @@
 #include "GateGenerator.h"
 
 
-Error_t  GateGenerator::create_gate(const Gate_t& gateType, Gate* outGate){
+Error_t GateGenerator::create_gate(const Gate_t &gateType, std::unique_ptr<Gate> &outGate) {
 	Error_t rtnError = NO_ERROR;
 
-	Gate *genericGate;	//pointer to new gate type
-
-	switch(gateType){
-		case AND_GATE:{
-			std::cout << "You want to create an AND Gate "<< std::endl;
-
-//			genericGate = new AND();
-			break;
-		}
-		case OR_GATE:{
-			std::cout << "You want to create an OR Gate "<< std::endl;
-
-
-			break;
-		}
-	}
+//	Gate *genericGate;	//pointer to new gate type
+//
+//	switch(gateType){
+//		case AND_GATE:{
+//			std::cout << "You want to create an AND Gate "<< std::endl;
+//
+////			genericGate = new AND();
+//			break;
+//		}
+//		case OR_GATE:{
+//			std::cout << "You want to create an OR Gate "<< std::endl;
+//
+//
+//			break;
+//		}
+//	}
 
 	return rtnError;
 }
 
-Error_t GateGenerator::create_node(std::string nodeName, Gate *gate, Node *outNode){
+Error_t GateGenerator::create_node(std::string nodeName, std::unique_ptr<Gate> &gate, std::unique_ptr<Node> &outNode) {
 	Error_t rtnError = NO_ERROR;
 
 	//TODO: getNode the node from the lookup table
@@ -52,22 +53,22 @@ Error_t GateGenerator::create_node(std::string nodeName, Gate *gate, Node *outNo
 
 Error_t GateGenerator::out_node(std::string nodeToOutput){
 	Error_t rtnError = NO_ERROR;
-	Node *tempNode;
-
-	if(nodeToOutput == "ALL"){
-		//TODO: loop through LUT and cout<< node
-	}else{
-		if(Node::getNode(nodeToOutput, tempNode) == true){
-			//TODO: cout << node
-		}else{
-			rtnError = OUT_NODE_ERROR;
-		}
-	}
+//	std::unique_ptr<Node> tempNode;
+//
+//	if(nodeToOutput == "ALL"){
+//		//TODO: loop through LUT and cout<< node
+//	}else{
+//		if(Node::getNode(nodeToOutput, tempNode) == true){
+//			//TODO: cout << node
+//		}else{
+//			rtnError = OUT_NODE_ERROR;
+//		}
+//	}
 
 	return rtnError;
 }
 
-Error_t GateGenerator::set_node(Node *node, std::string nodeValue){
+Error_t GateGenerator::set_node(std::unique_ptr<Node> &node, std::string nodeValue){
 	Error_t rtnError = NO_ERROR;
 
 	//find the node from the lookup table
@@ -117,8 +118,8 @@ bool GateGenerator::parse_input_string(std::string inputString){
 	Error_t error = NO_ERROR;
 
 
-	Node *currentNode = nullptr;
-	Gate *currentGate = nullptr;
+	std::unique_ptr<Node> currentNode;
+	std::unique_ptr<Gate> currentGate;
 
 	for (auto itr = buffer.begin(); itr!= buffer.end() ; itr++) {
 		switch (state) {
@@ -168,7 +169,7 @@ bool GateGenerator::parse_input_string(std::string inputString){
 
 			case ADD_NODE_STATE: {
 				std::cout <<"You want to create a Node" << std::endl;
-				if(Node::getNode(*itr, currentNode) == true){
+				if(true){//Node::getNode(*itr, currentNode) == true){
 
 				}else{
 					error = create_node(*itr, currentGate, currentNode);

@@ -5,7 +5,6 @@
  *      Author: Master
  */
 #include <map>
-
 #include "Gate.h"
 
 unsigned int Gate::idGenerator = 0;
