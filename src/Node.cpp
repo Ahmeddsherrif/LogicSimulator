@@ -103,3 +103,7 @@ bool Node::isAssigned() const {
 void Node::setAssigned(bool assigned) {
 	this->assigned = assigned;
 }
+
+std::map<std::string, Node*>& Node::getNodeLookup(){
+	return nodeLookup;
+}

@@ -39,12 +39,15 @@ enum Error_t {
 class GateGenerator {
 
 	private:
+		static std::vector<Gate *> gateVector;
+
+
 		static std::vector<std::string> split_string(const std::string &s, const char &delim);
 
-		static Error_t create_gate(const Gate_t &gateType, Gate *outGate);
-		static Error_t create_node(std::string nodeName, Gate *gate, Node *outNode);
+		static Error_t create_gate(const Gate_t &gateType, Gate *&outGate);
+		static Error_t create_node(std::string nodeName, Node *&outNode);
 
-		static Error_t set_node(Node *node, std::string nodeValue);
+		static Error_t set_node(Node *&node, std::string nodeValue);
 		static Error_t out_node(std::string nodeToOutput);
 
 		static void start_simulation();

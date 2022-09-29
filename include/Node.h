@@ -43,7 +43,7 @@ class Node {
 		bool operator^ (const Node& lhs);
 
 		static bool getNode(std::string nodeName, Node*& outNode);
-
+		static std::map<std::string, Node*>& getNodeLookup();
 };
 
 #endif /* NODE_H_ */

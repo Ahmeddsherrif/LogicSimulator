@@ -11,41 +11,68 @@
 #include <map>
 #include <vector>
 
-
+#include "Trace.h"
 #include "Command.h"
 #include "Node.h"
 #include "Gate.h"
+#include "AND.h"
+#include "OR.h"
+#include "NOT.h"
+#include "XOR.h"
 #include "GateGenerator.h"
 
 
-Error_t GateGenerator::create_gate(const Gate_t &gateType, Gate *outGate) {
+std::vector<Gate *> GateGenerator::gateVector;
+
+Error_t GateGenerator::create_gate(const Gate_t &gateType, Gate *&outGate) {
 	Error_t rtnError = NO_ERROR;
 
-//	Gate *genericGate;	//pointer to new gate type
-//
-//	switch(gateType){
-//		case AND_GATE:{
-//			std::cout << "You want to create an AND Gate "<< std::endl;
-//
-////			genericGate = new AND();
-//			break;
-//		}
-//		case OR_GATE:{
-//			std::cout << "You want to create an OR Gate "<< std::endl;
-//
-//
-//			break;
-//		}
-//	}
+	switch(gateType){
+		case AND_GATE:{
+			TRACE_PRINT("You want to create an AND Gate ");
+			outGate = new AND();
+			break;
+		}
+		case OR_GATE:{
+			TRACE_PRINT("You want to create an OR Gate ");
+			outGate = new OR();
+			break;
+		}
+		case NOT_GATE:{
+			TRACE_PRINT("You want to create an NOT Gate ");
+			outGate = new NOT();
+			break;
+		}
+		case XOR_GATE:{
+			TRACE_PRINT("You want to create an XOR Gate ");
+			outGate = new XOR();
+			break;
+		}
+		case NAND_GATE:{
+			TRACE_PRINT("You want to create an NAND Gate ");
+			outGate = new AND(true);
+			break;
+		}
+		case NOR_GATE:{
+			TRACE_PRINT("You want to create an NOR Gate ");
+			outGate = new OR(true);
+			break;
+		}
+		case XNOR_GATE:{
+			TRACE_PRINT("You want to create an XNOR Gate ");
+			outGate = new XOR(true);
+			break;
+		}
+
+	}
 
 	return rtnError;
 }
 
-Error_t GateGenerator::create_node(std::string nodeName, Gate *gate, Node *outNode) {
+Error_t GateGenerator::create_node(std::string nodeName, Node *&outNode) {
 	Error_t rtnError = NO_ERROR;
 
-	//TODO: getNode the node from the lookup table
-	//TODO: Node::Find()
+	outNode = new Node(nodeName);
 
 	return rtnError;
 }
@@ -54,33 +81,32 @@ Error_t GateGenerator::create_node(std::string nodeName, Gate *gate, Node *outNo
 
 Error_t GateGenerator::out_node(std::string nodeToOutput){
 	Error_t rtnError = NO_ERROR;
-//	Node *tempNode;
-//
-//	if(nodeToOutput == "ALL"){
-//		//TODO: loop through LUT and cout<< node
-//	}else{
-//		if(Node::getNode(nodeToOutput, tempNode) == true){
-//			//TODO: cout << node
-//		}else{
-//			rtnError = OUT_NODE_ERROR;
-//		}
-//	}
+	Node *tempNode;
+	if(nodeToOutput == "ALL"){
+		auto nodesLookup = Node::getNodeLookup();
+		for(auto itr = nodesLookup.begin(); itr != nodesLookup.end(); itr++){
+			std::cout << *(itr->second) << std::endl;
+		}
+	}else{
+		if(Node::getNode(nodeToOutput, tempNode) == true){
+			std::cout << tempNode << std::endl;
+		}else{
+			rtnError = OUT_NODE_ERROR;
+		}
+	}
 
 	return rtnError;
 }
 
-Error_t GateGenerator::set_node(Node *node, std::string nodeValue){
+Error_t GateGenerator::set_node(Node *&node, std::string nodeValue){
 	Error_t rtnError = NO_ERROR;
-
-	//find the node from the lookup table
-	//Node::Find()
 
 	if(nodeValue.length() == 1){
 		if(nodeValue == "1"){
-
+			node->setValue(true);
 		}
 		else if (nodeValue == "0"){
-
+			node->setValue(false);
 		}
 		else{
 			rtnError = SET_NODE_ERROR;
@@ -93,7 +119,7 @@ Error_t GateGenerator::set_node(Node *node, std::string nodeValue){
 }
 
 void GateGenerator::start_simulation(){
-	std::cout << "Starting The Simulation "<< std::endl;
+	TRACE_PRINT("Starting The Simulation ");
 }
 
 std::vector<std::string> GateGenerator::split_string(const std::string &s, const char &delim){
@@ -115,9 +141,10 @@ bool GateGenerator::parse_input_string(std::string inputString){
 	bool rtnValue = true;
 
 	std::vector<std::string> buffer = split_string(inputString, ' ');
+	std::vector<Node> nodeVector;
+
 	State_t state = EXECUTE_COMMAND_STATE;
 	Error_t error = NO_ERROR;
-
 
 	Node *currentNode = nullptr;
 	Gate *currentGate = nullptr;
@@ -127,30 +154,60 @@ bool GateGenerator::parse_input_string(std::string inputString){
 			case EXECUTE_COMMAND_STATE: {
 				switch (Command::string_to_command(*itr)) {
 					case AND_COMMAND: {
-						std::cout << "You Have Entered AND" << std::endl;
+						TRACE_PRINT("You Have Entered AND");
 						create_gate(AND_GATE, currentGate);
 						state = ADD_NODE_STATE;
 						break;
 					}
 					case OR_COMMAND: {
-						std::cout << "You Have Entered OR" << std::endl;
+						TRACE_PRINT("You Have Entered OR");
 						create_gate(OR_GATE, currentGate);
 						state = ADD_NODE_STATE;
 						break;
 					}
+					case NOT_COMMAND: {
+						TRACE_PRINT("You Have Entered NOT");
+						create_gate(NOT_GATE, currentGate);
+						state = ADD_NODE_STATE;
+						break;
+					}
+					case NAND_COMMAND: {
+						TRACE_PRINT("You Have Entered NAND");
+						create_gate(NAND_GATE, currentGate);
+						state = ADD_NODE_STATE;
+						break;
+					}
+					case NOR_COMMAND: {
+						TRACE_PRINT("You Have Entered NOR");
+						create_gate(NOR_GATE, currentGate);
+						state = ADD_NODE_STATE;
+						break;
+					}
+					case XOR_COMMAND: {
+						TRACE_PRINT("You Have Entered XOR");
+						create_gate(XOR_GATE, currentGate);
+						state = ADD_NODE_STATE;
+						break;
+					}
+					case XNOR_COMMAND: {
+						TRACE_PRINT("You Have Entered XNOR");
+						create_gate(XNOR_GATE, currentGate);
+						state = ADD_NODE_STATE;
+						break;
+					}
 					case SET_COMMAND: {
-						std::cout << "You Have Entered SET" << std::endl;
+						TRACE_PRINT("You Have Entered SET");
 						state = SET_NODE_STATE;
 						break;
 					}
 					case SIM_COMMAND: {
-						std::cout << "You Have Entered SIM" << std::endl;
+						TRACE_PRINT("You Have Entered SIM");
 						start_simulation();
 						state = END_LINE_STATE;
 						break;
 					}
 					case OUT_COMMAND: {
-						std::cout << "You Have Entered OUT" << std::endl;
+						TRACE_PRINT("You Have Entered OUT");
 						state = OUT_NODE_STATE;
 						break;
 					}
@@ -167,25 +224,30 @@ bool GateGenerator::parse_input_string(std::string inputString){
 			}
 
 			case ADD_NODE_STATE: {
-				std::cout <<"You want to create a Node" << std::endl;
+				TRACE_PRINT("You want to create a Node");
 
-
-//				if(Node::getNode(*itr, currentNode) == true){				//Node Exists
-//					//TODO: Link Node to Gate
-//				}else{														//Node doesn't Exist
-//					error = create_node(*itr, currentGate, currentNode);
-//				}
+				if(Node::getNode(*itr, currentNode) == true){				//Node Exists
+					nodeVector.push_back(*currentNode);
+				}else{														//Node doesn't Exist
+					error = create_node(*itr, currentNode);
+					nodeVector.push_back(*currentNode);
+					if(currentNode != nullptr){
+						delete currentNode;
+					}
+				}
 
 				if(error == NO_ERROR){
-					//add currentNode to vector
 					if(itr + 1 != buffer.end()){
 						state = ADD_NODE_STATE;
 					}else{
+						currentGate->setNodes(nodeVector);
+						gateVector.push_back(currentGate);
 						state = END_LINE_STATE;
 					}
 				}else{
 					state = ERROR_STATE;
 				}
+
 				break;
 			}
 
@@ -196,7 +258,7 @@ bool GateGenerator::parse_input_string(std::string inputString){
 			}
 
 			case SET_NODE_STATE: {
-				//Node::getNode(*itr, currentNode);
+				Node::getNode(*itr, currentNode);
 				state = SET_VALUE_STATE;
 				break;
 			}
@@ -212,7 +274,7 @@ bool GateGenerator::parse_input_string(std::string inputString){
 			}
 
 			case ERROR_STATE: {
-				std::cout << "This Line is corrupted" << std::endl;
+				TRACE_PRINT("This Line is corrupted");
 
 				switch(error){
 					case CREATE_NODE_ERROR:{
@@ -230,11 +292,17 @@ bool GateGenerator::parse_input_string(std::string inputString){
 			}
 
 			case END_LINE_STATE:{
-				std::cout << "Ending the line" <<std::endl;
+				TRACE_PRINT("Ending the line");
 
 				break;
 			}
 			case END_PARSE_STATE: {
+
+				for (auto itr = gateVector.begin(); itr != gateVector.end(); itr++){
+					TRACE_PRINT("Deleting gate Vector");
+					delete *itr;
+				}
+
 				rtnValue = false;
 				break;
 			}

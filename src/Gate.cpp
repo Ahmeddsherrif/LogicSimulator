@@ -47,6 +47,14 @@ Node Gate::get_output_node(){
 	return nodes.back();
 }
 
+const std::vector<Node>& Gate::getNodes() const {
+	return nodes;
+}
+
+void Gate::setNodes(const std::vector<Node> &nodes) {
+	this->nodes = nodes;
+}
+
 bool Gate::getGate(unsigned int gateID, Gate *&outNode){
 	bool rtnState = true;
 

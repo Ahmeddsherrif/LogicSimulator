@@ -30,6 +30,9 @@ class Gate {
 		virtual void simulateGate()  = 0;
 		virtual void addNode(const Node &inNode);
 
+		const std::vector<Node>& getNodes() const;
+		void setNodes(const std::vector<Node> &nodes);
+
 		Node get_output_node();
 		static bool getGate(unsigned int gateID, Gate *&outNode);
 
