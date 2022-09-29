@@ -42,6 +42,7 @@ class GateGenerator {
 		static std::vector<Gate *> gateVector;
 
 
+
 		static std::vector<std::string> split_string(const std::string &s, const char &delim);
 
 		static Error_t create_gate(const Gate_t &gateType, Gate *&outGate);

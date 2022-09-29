@@ -10,6 +10,7 @@
 
 #include <map>
 
+#include "Trace.h"
 #include "Node.h"
 
 std::map<std::string, Node *> Node::nodeLookup;
@@ -19,6 +20,14 @@ std::ostream& operator<<(std::ostream& os, const Node& node){
 	return os;
 }
 
+Node& Node::operator= (const Node& lhs){
+	TRACE_PRINT("ASSIGMENT OPERATOR OVERLOAD CALLED");
+	this->name = lhs.name;
+	this->assigned = lhs.assigned;
+	this->value = lhs.value;
+
+	return *this;
+}
 
 bool Node::operator& (const Node& lhs){
 	return ((this->value) & (lhs.value));
@@ -49,6 +58,13 @@ Node::Node()
 	this->assigned = false;
 }
 
+Node::Node (const Node& second)
+	:	Node(second.name, second.value)
+{
+	TRACE_PRINT("COPY CONSTRUCTOR CALLED");
+	this->assigned = second.assigned;
+}
+
 Node::~Node(){
 	nodeLookup.erase(name);
 }
@@ -63,6 +79,8 @@ bool Node::getNode(std::string nodeName, Node *&outNode){
 	if (nodeIterator != nodeLookup.end()){
 		outNode = (nodeIterator->second);
 	}else{
+		TRACE_PRINT("Node not Found");
+		outNode = (Node *) 0xDEADBEEF;
 		rtnState = false;
 	}
 

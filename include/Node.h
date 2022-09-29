@@ -29,6 +29,7 @@ class Node {
 		Node();
 		Node(const std::string& name);
 		Node(const std::string& name, const bool& value);
+		Node(const Node& second);
 		~Node();
 
 		std::string getName() const;
@@ -38,6 +39,7 @@ class Node {
 		bool isAssigned() const;
 		void setAssigned(bool assigned);
 
+		Node& operator= (const Node& lhs);
 		bool operator& (const Node& lhs);
 		bool operator| (const Node& lhs);
 		bool operator^ (const Node& lhs);

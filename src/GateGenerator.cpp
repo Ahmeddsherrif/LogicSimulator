@@ -154,7 +154,7 @@ bool GateGenerator::parse_input_string(std::string inputString){
 	Node *currentNode = nullptr;
 	Gate *currentGate = nullptr;
 
-	for (auto itr = buffer.begin(); itr!= buffer.end() ; itr++) {
+	for (auto itr = buffer.begin(); itr!= buffer.end() + 1 ; itr++) {
 		switch (state) {
 			case EXECUTE_COMMAND_STATE: {
 				switch (Command::string_to_command(*itr)) {
@@ -231,9 +231,12 @@ bool GateGenerator::parse_input_string(std::string inputString){
 			case ADD_NODE_STATE: {
 				TRACE_PRINT("You want to create a Node");
 
+				TRACE_PRINT("Searching if the Node Exists....");
 				if(Node::getNode(*itr, currentNode) == true){				//Node Exists
+					TRACE_PRINT("MATCH FOUND!");
 					nodeVector.push_back(*currentNode);
 				}else{														//Node doesn't Exist
+					TRACE_PRINT("NODE Doesn't Exists");
 					error = create_node(*itr, currentNode);
 					nodeVector.push_back(*currentNode);
 					if(currentNode != nullptr){
@@ -302,7 +305,9 @@ bool GateGenerator::parse_input_string(std::string inputString){
 
 			case END_LINE_STATE:{
 				TRACE_PRINT("Ending the line");
-
+				if(itr != buffer.end()){
+					itr = buffer.end();
+				}
 				break;
 			}
 			case END_PARSE_STATE: {
