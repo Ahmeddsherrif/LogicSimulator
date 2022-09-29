@@ -91,7 +91,7 @@ Error_t GateGenerator::out_node(std::string nodeToOutput){
 		if(Node::getNode(nodeToOutput, tempNode) == true){
 			std::cout << tempNode << std::endl;
 		}else{
-			rtnError = OUT_NODE_ERROR;
+			rtnError = OUT_NODE_ERROR;				//node does not exist
 		}
 	}
 
@@ -120,6 +120,11 @@ Error_t GateGenerator::set_node(Node *&node, std::string nodeValue){
 
 void GateGenerator::start_simulation(){
 	TRACE_PRINT("Starting The Simulation ");
+
+	for (auto itr = gateVector.begin(); itr != gateVector.end(); itr++){
+		TRACE_PRINT("Simulating Gate");
+		(*itr)->simulateGate();
+	}
 }
 
 std::vector<std::string> GateGenerator::split_string(const std::string &s, const char &delim){
@@ -275,8 +280,12 @@ bool GateGenerator::parse_input_string(std::string inputString){
 
 			case ERROR_STATE: {
 				TRACE_PRINT("This Line is corrupted");
+				if(currentGate != nullptr){
+					delete currentGate;
+				}
 
 				switch(error){
+
 					case CREATE_NODE_ERROR:{
 						//pop current gate from vector
 						//pop all created nodes from vector
@@ -303,6 +312,7 @@ bool GateGenerator::parse_input_string(std::string inputString){
 					delete *itr;
 				}
 
+				TRACE_PRINT("HASTA LA VISTA!");
 				rtnValue = false;
 				break;
 			}
