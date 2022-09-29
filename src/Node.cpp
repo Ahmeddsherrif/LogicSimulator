@@ -20,9 +20,19 @@ std::ostream& operator<<(std::ostream& os, const Node& node){
 }
 
 
+bool Node::operator& (const Node& lhs){
+	return ((this->value) & (lhs.value));
+}
+bool Node::operator| (const Node& lhs){
+	return ((this->value) | (lhs.value));
+}
+bool Node::operator^ (const Node& lhs){
+	return ((this->value) ^ (lhs.value));
+}
+
 
 Node::Node(const std::string& name, const bool& value)
-	: name{name}, value{value}, state{false}
+	: name{name}, state{UNASSIGNED_NODE}, value{value}
 {
 	nodeLookup.insert(std::make_pair(name, this));
 }
@@ -43,13 +53,21 @@ Node::~Node(){
 	nodeLookup.erase(name);
 }
 
-bool Node::getNode(std::string nodeName, Node *outNode){
+state_t Node::getState() const {
+	return state;
+}
+
+void Node::setState(state_t state) {
+	this->state = state;
+}
+
+bool Node::getNode(std::string nodeName, Node *&outNode){
 	bool rtnState = true;
 
 	auto nodeIterator = nodeLookup.find(nodeName);
 
 	if (nodeIterator != nodeLookup.end()){
-		outNode = nodeIterator->second;
+		outNode = (nodeIterator->second);
 	}else{
 		rtnState = false;
 	}

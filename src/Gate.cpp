@@ -5,17 +5,27 @@
  *      Author: Master
  */
 #include <map>
+#include <vector>
+
+#include "Node.h"
 #include "Gate.h"
 
 unsigned int Gate::idGenerator = 0;
 
 std::map<unsigned int, Gate *> Gate::gateLookup;
 
-Gate::Gate()
-	:id {idGenerator}
+Gate::Gate(const std::vector<Node> &nodes)
+	:id {idGenerator}, nodes{nodes}
 {
 	idGenerator++;
 	gateLookup.insert(std::make_pair(id, this));
+
+	for(auto itr=(this->nodes).begin(); itr < (this->nodes).end() - 1 ; itr++){
+		itr->setState(INPUT_NODE);
+	}
+
+	(this->nodes).back().setState(OUTPUT_NODE);
+
 }
 
 Gate::~Gate() {
@@ -23,7 +33,8 @@ Gate::~Gate() {
 }
 
 
-bool Gate::getGate(unsigned int gateID, Gate *outNode){
+
+bool Gate::getGate(unsigned int gateID, Gate *&outNode){
 	bool rtnState = true;
 
 	auto gateIterator = gateLookup.find(gateID);

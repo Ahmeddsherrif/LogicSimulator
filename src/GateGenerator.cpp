@@ -9,11 +9,12 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <vector>
 
 
 #include "Command.h"
-#include "Gate.h"
 #include "Node.h"
+#include "Gate.h"
 #include "GateGenerator.h"
 
 
@@ -169,11 +170,11 @@ bool GateGenerator::parse_input_string(std::string inputString){
 				std::cout <<"You want to create a Node" << std::endl;
 
 
-				if(Node::getNode(*itr, currentNode) == true){				//Node Exists
-					//TODO: Link Node to Gate
-				}else{														//Node doesn't Exist
-					error = create_node(*itr, currentGate, currentNode);
-				}
+//				if(Node::getNode(*itr, currentNode) == true){				//Node Exists
+//					//TODO: Link Node to Gate
+//				}else{														//Node doesn't Exist
+//					error = create_node(*itr, currentGate, currentNode);
+//				}
 
 				if(error == NO_ERROR){
 					//add currentNode to vector
@@ -195,7 +196,7 @@ bool GateGenerator::parse_input_string(std::string inputString){
 			}
 
 			case SET_NODE_STATE: {
-				Node::getNode(*itr, currentNode);
+				//Node::getNode(*itr, currentNode);
 				state = SET_VALUE_STATE;
 				break;
 			}
