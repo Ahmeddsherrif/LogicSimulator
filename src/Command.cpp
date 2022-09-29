@@ -13,6 +13,11 @@
 std::map<std::string, Command_t> Command::commandMap{
 		{ "AND", AND_COMMAND },
 		{ "OR", OR_COMMAND },
+		{ "NOT", NOT_COMMAND},
+		{ "XOR", XOR_COMMAND},
+		{ "XNOR", XNOR_COMMAND},
+		{ "NAND", NAND_COMMAND},
+		{ "NOR", NOR_COMMAND},
 		{ "SET", SET_COMMAND },
 		{ "SIM", SIM_COMMAND },
 		{ "OUT", OUT_COMMAND },

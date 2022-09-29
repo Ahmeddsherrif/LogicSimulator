@@ -9,8 +9,8 @@
 #define SIMULATION_H_
 
 class Simulation {
-public:
-	Simulation();
+	public:
+		Simulation();
 };
 
 #endif /* SIMULATION_H_ */

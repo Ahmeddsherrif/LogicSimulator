@@ -20,8 +20,15 @@ Gate::Gate(const std::vector<Node> &nodes)
 	this->nodes = nodes;
 }
 
+Gate::Gate(const bool &isInverted)
+	:Gate()
+{
+	this->isInverted = isInverted;
+}
+
+
 Gate::Gate()
-	:id {idGenerator}
+	:id {idGenerator}, nodeCount{0}, isInverted{false}
 {
 	idGenerator++;
 	gateLookup.insert(std::make_pair(id, this));
