@@ -21,12 +21,24 @@
 int main() {
 	std::string inputString;
 
-	Node A{"A", true};
-	Node B{"B", true};
-	Node C{"C"};
+	Node *A = new Node {"A", true};
+	Node *B = new Node {"B", false};
+	Node *C = new Node {"C"};
+
+	//Gate
+	std::vector<Node> vec = {*A, *B, *C};
+
+	delete A;
+	delete B;
+	delete C;
+
+	if(vec[2].setValue(vec[0] & vec[1])){
+		std::cout << vec[2] << std::endl;
+	}else{
+		std::cout << "Error" << std::endl;
+	}
 
 
-	std::vector<Node> vec = {A, B, C};
 
 	//Gate g{vec};
 

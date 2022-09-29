@@ -20,7 +20,7 @@ class Node {
 
 	private:
 		std::string name;
-		state_t state;
+		bool assigned;
 		bool value;
 
 		static std::map<std::string, Node *> nodeLookup;
@@ -34,10 +34,9 @@ class Node {
 		std::string getName() const;
 		void setName(char name);
 		bool isValue() const;
-		void setValue(bool value);
-		state_t getState() const;
-		void setState(state_t state);
-
+		bool setValue(bool value);
+		bool isAssigned() const;
+		void setAssigned(bool assigned);
 
 		bool operator& (const Node& lhs);
 		bool operator| (const Node& lhs);
