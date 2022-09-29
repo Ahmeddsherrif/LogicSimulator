@@ -14,7 +14,11 @@
 //#include <memory>
 
 #include "Node.h"
+
 #include "Gate.h"
+#include "AND.h"
+#include "OR.h"
+
 #include "GateGenerator.h"
 
 
@@ -23,22 +27,43 @@ int main() {
 
 	Node *A = new Node {"A", true};
 	Node *B = new Node {"B", false};
+	Node *D = new Node {"D", true};
 	Node *C = new Node {"C"};
 
-	//Gate
-	std::vector<Node> vec = {*A, *B, *C};
+	Gate *b = new OR;
+	Gate *a = new AND;
+
+	a->addNode(*A);
+	a->addNode(*B);
+	a->addNode(*D);
+	a->addNode(*C);
+
+
+	b->addNode(*A);
+	b->addNode(*B);
+	b->addNode(*D);
+	b->addNode(*C);
+
+	a->simulateGate();
+	b->simulateGate();
+
+	std::cout << a->get_output_node() << std::endl;
+	std::cout << b->get_output_node() << std::endl;
 
 	delete A;
 	delete B;
 	delete C;
 
-	if(vec[2].setValue(vec[0] & vec[1])){
-		std::cout << vec[2] << std::endl;
-	}else{
-		std::cout << "Error" << std::endl;
-	}
+	delete a;
+	delete b;
 
-
+//	if(vec[2].setValue(vec[0] & vec[1])){
+//		std::cout << vec[2] << std::endl;
+//	}else{
+//		std::cout << "Error" << std::endl;
+//	}
+//
+//
 
 	//Gate g{vec};
 

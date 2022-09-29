@@ -77,9 +77,10 @@ void Node::setName(char name) {
 	this->name = name;
 }
 
-bool Node::isValue() const {
+bool Node::getValue() const {
 	return value;
 }
+
 
 
 bool Node::setValue(bool value) {

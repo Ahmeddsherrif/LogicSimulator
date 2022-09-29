@@ -15,11 +15,16 @@ unsigned int Gate::idGenerator = 0;
 std::map<unsigned int, Gate *> Gate::gateLookup;
 
 Gate::Gate(const std::vector<Node> &nodes)
-	:id {idGenerator}, nodes{nodes}
+	:Gate()
+{
+	this->nodes = nodes;
+}
+
+Gate::Gate()
+	:id {idGenerator}
 {
 	idGenerator++;
 	gateLookup.insert(std::make_pair(id, this));
-
 }
 
 Gate::~Gate() {
@@ -27,6 +32,13 @@ Gate::~Gate() {
 }
 
 
+void Gate::addNode(const Node &inNode){
+	nodes.push_back(inNode);
+}
+
+Node Gate::get_output_node(){
+	return nodes.back();
+}
 
 bool Gate::getGate(unsigned int gateID, Gate *&outNode){
 	bool rtnState = true;

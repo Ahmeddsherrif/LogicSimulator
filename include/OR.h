@@ -8,9 +8,20 @@
 #ifndef OR_H_
 #define OR_H_
 
-class OR {
-public:
-	OR();
+#include "Gate.h"
+
+class OR: public Gate {
+	public:
+		virtual void simulateGate() override final {
+			bool output = false;
+
+			for (auto itr = nodes.begin(); itr < nodes.end() - 2; itr++) {
+				output |= itr->getValue() | (itr + 1)->getValue();
+			}
+
+			nodes.back().setValue(output);
+		}
+
 };
 
 #endif /* OR_H_ */

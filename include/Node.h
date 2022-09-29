@@ -33,7 +33,7 @@ class Node {
 
 		std::string getName() const;
 		void setName(char name);
-		bool isValue() const;
+		bool getValue() const;
 		bool setValue(bool value);
 		bool isAssigned() const;
 		void setAssigned(bool assigned);
