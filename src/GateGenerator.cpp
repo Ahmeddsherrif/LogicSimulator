@@ -23,6 +23,7 @@
 
 
 std::vector<Gate *> GateGenerator::gateVector;
+std::vector<Node *> GateGenerator::nodeVector;
 
 Error_t GateGenerator::create_gate(const Gate_t &gateType, Gate *&outGate) {
 	Error_t rtnError = NO_ERROR;
@@ -83,13 +84,12 @@ Error_t GateGenerator::out_node(std::string nodeToOutput){
 	Error_t rtnError = NO_ERROR;
 	Node *tempNode;
 	if(nodeToOutput == "ALL"){
-		auto nodesLookup = Node::getNodeLookup();
-		for(auto itr = nodesLookup.begin(); itr != nodesLookup.end(); itr++){
-			std::cout << *(itr->second) << std::endl;
+		for(auto itr = nodeVector.begin(); itr != nodeVector.end(); itr++){
+			std::cout << **itr << std::endl;
 		}
 	}else{
-		if(Node::getNode(nodeToOutput, tempNode) == true){
-			std::cout << tempNode << std::endl;
+		if(getNode(nodeToOutput, tempNode) == true){
+			std::cout << *tempNode << std::endl;
 		}else{
 			rtnError = OUT_NODE_ERROR;				//node does not exist
 		}
@@ -97,6 +97,21 @@ Error_t GateGenerator::out_node(std::string nodeToOutput){
 
 	return rtnError;
 }
+
+bool GateGenerator::getNode(std::string nodeName, Node *& node){
+	bool rtnState = false;
+
+	for(auto itr = nodeVector.begin(); itr != nodeVector.end(); itr++){
+		if((*itr)->getName() == nodeName){
+			node = *itr;
+			rtnState = true;
+			break;
+		}
+	}
+
+	return rtnState;
+}
+
 
 Error_t GateGenerator::set_node(Node *&node, std::string nodeValue){
 	Error_t rtnError = NO_ERROR;
@@ -121,10 +136,23 @@ Error_t GateGenerator::set_node(Node *&node, std::string nodeValue){
 void GateGenerator::start_simulation(){
 	TRACE_PRINT("Starting The Simulation ");
 
-	for (auto itr = gateVector.begin(); itr != gateVector.end(); itr++){
-		TRACE_PRINT("Simulating Gate");
-		(*itr)->simulateGate();
-	}
+	bool isSimulationCompleted;
+
+	do {
+		isSimulationCompleted = true;
+
+		for (auto itr = gateVector.begin(); itr != gateVector.end(); itr++) {
+
+			TRACE_PRINT("Simulating Gate");
+			if ((*itr)->is_gate_simulated() == false) {
+				TRACE_PRINT("A Gate Has Been Simulated");
+				(*itr)->simulateGate();
+				isSimulationCompleted = false;
+			}
+
+		}
+
+	} while (isSimulationCompleted == false);
 }
 
 std::vector<std::string> GateGenerator::split_string(const std::string &s, const char &delim){
@@ -146,7 +174,6 @@ bool GateGenerator::parse_input_string(std::string inputString){
 	bool rtnValue = true;
 
 	std::vector<std::string> buffer = split_string(inputString, ' ');
-	std::vector<Node> nodeVector;
 
 	State_t state = EXECUTE_COMMAND_STATE;
 	Error_t error = NO_ERROR;
@@ -232,16 +259,12 @@ bool GateGenerator::parse_input_string(std::string inputString){
 				TRACE_PRINT("You want to create a Node");
 
 				TRACE_PRINT("Searching if the Node Exists....");
-				if(Node::getNode(*itr, currentNode) == true){				//Node Exists
+				if(getNode(*itr, currentNode) == true){				//Node Exists
 					TRACE_PRINT("MATCH FOUND!");
-					nodeVector.push_back(*currentNode);
 				}else{														//Node doesn't Exist
 					TRACE_PRINT("NODE Doesn't Exists");
 					error = create_node(*itr, currentNode);
-					nodeVector.push_back(*currentNode);
-					if(currentNode != nullptr){
-						delete currentNode;
-					}
+					nodeVector.push_back(currentNode);
 				}
 
 				if(error == NO_ERROR){
@@ -266,7 +289,7 @@ bool GateGenerator::parse_input_string(std::string inputString){
 			}
 
 			case SET_NODE_STATE: {
-				Node::getNode(*itr, currentNode);
+				getNode(*itr, currentNode);
 				state = SET_VALUE_STATE;
 				break;
 			}
@@ -314,6 +337,11 @@ bool GateGenerator::parse_input_string(std::string inputString){
 
 				for (auto itr = gateVector.begin(); itr != gateVector.end(); itr++){
 					TRACE_PRINT("Deleting gate Vector");
+					delete *itr;
+				}
+
+				for (auto itr = nodeVector.begin(); itr != nodeVector.end(); itr++){
+					TRACE_PRINT("Deleting node Vector");
 					delete *itr;
 				}
 

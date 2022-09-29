@@ -20,10 +20,26 @@ class NOT : public Gate{
 			}
 		}
 
-		virtual void simulateGate() override final{
+		virtual bool simulateGate() override final{
 			bool output = true;
-			output = !(nodes.front().getValue());
-			nodes.back().setValue(output);
+			bool rtnValue = true;
+
+			//checks to see if all the gate input nodes are assigned or not
+			for(auto itr = nodes.begin(); itr != nodes.end() - 1; itr++){
+				if(itr->isAssigned() == false){
+					rtnValue = false;
+					break;
+				}
+			}
+
+			if (rtnValue == true) {
+				output = !(nodes.front().getValue());
+				nodes.back().setValue(output);
+
+				isSimulated = true;
+			}
+
+			return rtnValue;
 		}
 
 };

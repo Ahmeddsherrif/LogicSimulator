@@ -22,18 +22,32 @@ class AND : public Gate{
 		}
 
 
-		virtual void simulateGate() override final{
+		virtual bool simulateGate() override final{
 			bool output = true;
+			bool rtnValue = true;
 
-			for(auto itr = nodes.begin(); itr < nodes.end()- 2; itr++){
-				output &= itr->getValue() & (itr+1)->getValue();
+			//checks to see if all the gate input nodes are assigned or not
+			for(auto itr = nodes.begin(); itr != nodes.end() - 1; itr++){
+				if(itr->isAssigned() == false){
+					rtnValue = false;
+					break;
+				}
 			}
 
-			if(isInverted){
-				output = !output;
+			if (rtnValue == true) {
+				for(auto itr = nodes.begin(); itr < nodes.end()- 2; itr++){
+					output &= itr->getValue() & (itr+1)->getValue();
+				}
+
+				if(isInverted){
+					output = !output;
+				}
+
+				nodes.back().setValue(output);
+				isSimulated = true;
 			}
 
-			nodes.back().setValue(output);
+			return rtnValue;
 		}
 
 };

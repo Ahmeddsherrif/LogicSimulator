@@ -51,8 +51,15 @@ const std::vector<Node>& Gate::getNodes() const {
 	return nodes;
 }
 
-void Gate::setNodes(const std::vector<Node> &nodes) {
-	this->nodes = nodes;
+bool Gate::is_gate_simulated() const{
+	return isSimulated;
+}
+
+void Gate::setNodes(const std::vector<Node *> &nodes) {
+	(this->nodes).clear();
+	for(auto itr = nodes.begin(); itr != nodes.end(); itr++){
+		(this->nodes).push_back(**itr);
+	}
 }
 
 bool Gate::getGate(unsigned int gateID, Gate *&outNode){

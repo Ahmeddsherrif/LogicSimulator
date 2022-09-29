@@ -19,6 +19,7 @@ class Gate {
 	protected:
 		unsigned char nodeCount;
 		bool isInverted;
+		bool isSimulated;
 		std::vector<Node> nodes;
 
 	public:
@@ -27,11 +28,13 @@ class Gate {
 		Gate();
 		virtual ~Gate();
 
-		virtual void simulateGate()  = 0;
+		virtual bool simulateGate()  = 0;
 		virtual void addNode(const Node &inNode);
 
+		bool is_gate_simulated() const;
+
 		const std::vector<Node>& getNodes() const;
-		void setNodes(const std::vector<Node> &nodes);
+		void setNodes(const std::vector<Node *> &nodes);
 
 		Node get_output_node();
 		static bool getGate(unsigned int gateID, Gate *&outNode);
