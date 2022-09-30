@@ -38,5 +38,7 @@ void Gate::setNodes(const std::vector<Node *> &nodes) {
 	for(auto itr = nodes.begin(); itr != nodes.end(); itr++){
 		(this->nodes).push_back(*itr);								//calls copy constructor of nodes a lot
 	}
+
+	this->nodes.back()->setAsOutput();
 }
 

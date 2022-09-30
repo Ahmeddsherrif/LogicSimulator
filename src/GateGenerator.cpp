@@ -10,7 +10,6 @@
 #include <string>
 #include <map>
 #include <vector>
-#include <unordered_map>
 #include <set>
 
 
@@ -27,7 +26,7 @@
 
 
 std::set<Gate *> GateGenerator::gateSet;
-std::unordered_map<std::string, Node *> GateGenerator::nodeMap;
+std::map<std::string, Node *> GateGenerator::nodeMap;
 
 Error_t GateGenerator::create_gate(const Gate_t &gateType, Gate *&outGate) {
 	Error_t rtnError = NO_ERROR;

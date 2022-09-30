@@ -13,7 +13,16 @@
 
 
 std::ostream& operator<<(std::ostream& os, const Node& node){
-	os << node.name << ": " << node.value;
+	if(node.assigned == true){
+		os << node.name << ": " << node.value;
+	}else{
+		if(node.isOutput == true){
+			os << node.name << ": " << "Simulate First";
+		}else{
+			os << node.name << ": " << "un-assigned";
+		}
+	}
+
 	return os;
 }
 
@@ -31,11 +40,14 @@ bool Node::operator^ (const Node& lhs){
 
 
 Node::Node(const std::string& name)
-	: name{name}, assigned{false}, value{false}
+	: name{name}, assigned{false}, value{false}, isOutput{false}
 {
 
 }
 
+void Node::setAsOutput(){
+	this->isOutput = true;
+}
 
 void Node::setValue(bool value) {
 

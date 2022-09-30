@@ -44,7 +44,7 @@ class GateGenerator {
 
 	private:
 		static std::set<Gate *> gateSet;
-		static std::unordered_map<std::string, Node *> nodeMap;
+		static std::map<std::string, Node *> nodeMap;
 
 		static Error_t create_gate(const Gate_t &gateType, Gate *&outGate);
 		static Error_t create_node(std::string nodeName, Node *&outNode);
