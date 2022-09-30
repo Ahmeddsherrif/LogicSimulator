@@ -19,23 +19,22 @@ class XOR: public Gate {
 
 		virtual bool simulateGate() override final {
 			bool output = false;
-			bool rtnValue = true;
+			bool isAllAssigned = true;
 
 			//checks to see if all the gate input nodes are assigned or not
 			for(auto itr = nodes.begin(); itr != nodes.end() - 1; itr++){
-				if(itr->isAssigned() == false){
-					rtnValue = false;
+				if((*itr)->isAssigned() == false){
+					isAllAssigned = false;
 					break;
 				}
 			}
 
-
-			if (rtnValue == true) {
+			if (isAllAssigned == true) {
 				for (auto itr = nodes.begin(); itr < nodes.end() - 2; itr++) {
 					if(itr == nodes.begin()){
-						output = itr->getValue() ^ (itr + 1)->getValue();
+						output = (*itr)->getValue() ^ (*(itr + 1))->getValue();
 					}else{
-						output ^= itr->getValue() ^ (itr + 1)->getValue();
+						output ^= (*itr)->getValue() ^ (*(itr + 1))->getValue();
 					}
 				}
 
@@ -43,12 +42,12 @@ class XOR: public Gate {
 					output = !output;
 				}
 
-				nodes.back().setValue(output);
+				nodes.back()->setValue(output);
 
 				isSimulated = true;
 			}
 
-			return rtnValue;
+			return isAllAssigned;
 		}
 
 };

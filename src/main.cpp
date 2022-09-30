@@ -14,6 +14,7 @@
 
 
 #include "Trace.h"
+#include "helperfunctions.h"
 #include "Node.h"
 #include "Gate.h"
 #include "AND.h"
@@ -26,7 +27,6 @@
 
 
 int main() {
-
 	std::string inputString;
 
 	do {

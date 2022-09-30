@@ -1,7 +1,7 @@
 #ifndef _TRACE_H_
 #define _TRACE_H_
 
-#define IS_TRACE_ACTIVE		1
+#define IS_TRACE_ACTIVE		0
 
 #if (IS_TRACE_ACTIVE == 1)
 	#define TRACE_PRINT(x)	std::cout <<"$$$$ "<< x << std::endl
