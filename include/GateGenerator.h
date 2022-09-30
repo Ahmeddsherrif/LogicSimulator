@@ -43,25 +43,20 @@ enum Error_t {
 class GateGenerator {
 
 	private:
-		static std::vector<Gate *> gateVector;
-		static std::vector<Node *> nodeVector;
-
-		//
-		//static std::unorderd_map<std::string nodeName, Node * node>;
+		static std::set<Gate *> gateSet;
+		static std::unordered_map<std::string, Node *> nodeMap;
 
 		static Error_t create_gate(const Gate_t &gateType, Gate *&outGate);
 		static Error_t create_node(std::string nodeName, Node *&outNode);
 
 		static Error_t set_node(Node *&node, std::string nodeValue);
-		static Error_t getNode(std::string nodeName, Node *& node);		//TODO: fix bugs
-		static Error_t out_node(std::string nodeToOutput);				//TODO: fix bugs
+		static Error_t getNode(std::string nodeName, Node *& node);
+		static Error_t out_node(std::string nodeToOutput);
 
 		static Error_t start_simulation();
 
 	public:
 		static bool parse_input_string(std::string inputString);
-		// Gates on the heap
-		// nodes on the heap
 };
 
 #endif /* GATEGENERATOR_H_ */
