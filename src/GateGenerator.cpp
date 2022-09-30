@@ -301,6 +301,7 @@ bool GateGenerator::parse_input_string(std::string inputString){
 						}else if((buffer.size() - 1) < MINIMUM_NUMBER_OF_NODES_FOR_NOT_GATE){
 							error = TOO_FEW_PARAMETERS_ERROR;
 						}
+						break;
 					}
 					default:{
 						if((buffer.size() - 1) < MINIMUM_NUMBER_OF_NODES_FOR_ANY_GATE){
