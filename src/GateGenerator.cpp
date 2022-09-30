@@ -166,47 +166,6 @@ Error_t GateGenerator::set_node(Node *&node, std::string nodeValue){
 	return rtnError;
 }
 
-//Error_t GateGenerator::start_simulation(){
-//	TRACE_PRINT("Starting The Simulation ");
-//
-//	Error_t rtnError = NO_ERROR;
-//
-//	bool isSimulationCompleted;
-//	bool isGateSimulated;
-//
-//	 do{
-//
-//		isSimulationCompleted = true;
-//		isGateSimulated = false;
-//
-//		for (auto itr = gateSet.begin(); itr != gateSet.end(); itr++) {
-//
-//			// Check to see if it was simulated before or not
-//			if ((*itr)->is_gate_simulated() == false) {
-//				TRACE_PRINT("This Gate Has never Been Simulated before");
-//
-//				if((*itr)->simulateGate() == true){
-//					isGateSimulated = true;
-//				}
-//
-//				isSimulationCompleted = false;
-//			}else{
-//				TRACE_PRINT("This Gate Has Been Simulated before");
-//			}
-//		}
-//
-//		// Not a single gate in the iteration have been simulated successfully
-//		if(isGateSimulated == false && isSimulationCompleted == false){
-//			rtnError = SIMULATION_ERROR;
-//			break;
-//		}
-//
-//	}while (isSimulationCompleted == false);
-//
-//	return rtnError;
-//}
-
-
 
 bool GateGenerator::parse_input_string(std::string inputString){
 
@@ -400,12 +359,7 @@ bool GateGenerator::parse_input_string(std::string inputString){
 			case ERROR_STATE: {
 				TRACE_PRINT("This Line is corrupted");
 
-				if(currentGate != nullptr){
-					delete currentGate;
-				}
-
 				switch(error){
-
 					case CREATE_GATE_ERROR:{
 						TRACE_PRINT();
 						break;
@@ -415,27 +369,27 @@ bool GateGenerator::parse_input_string(std::string inputString){
 						break;
 					}
 					case SIMULATION_ERROR:{
-						TRACE_PRINT();
+						std::cout << "SIMULATION FAILED" << std::endl;
 						break;
 					}
 					case COMMAND_ERROR:{
-						TRACE_PRINT();
+						std::cout << "WRONG COMMAND, CHECK YOUR INPUT" << std::endl;
 						break;
 					}
 					case GET_NODE_ERROR:{
-						TRACE_PRINT();
+						std::cout << "INPUT NODE IS NOT FOUND" << std::endl;
 						break;
 					}
 					case SET_NODE_ERROR:{
-						TRACE_PRINT();
+						std::cout << "NODE VALUE IS UNDIFINED" << std::endl;
 						break;
 					}
 					case OUT_NODE_ERROR:{
-						TRACE_PRINT("Error Displaying Output Node");
+						std::cout << "THE NODE YOU ARE TRYING TO VIEW IS NOT FOUND" << std::endl;
 						break;
 					}
 					case NO_ERROR:{
-						TRACE_PRINT("WOW, i think it's time to debug...");
+						std::cout << "TOTAL SOFTWARE FAILURE, CONTACT SOFTWARE DEVELOPERS" << std::endl;
 						break;
 					}
 
