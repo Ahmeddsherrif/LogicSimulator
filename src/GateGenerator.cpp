@@ -28,8 +28,7 @@
 
 #define MINIMUM_NUMBER_OF_NODES_FOR_ANY_GATE	3
 
-#define MAXIMUM_NUMBER_OF_NODES_FOR_NOT_GATE	2
-#define MINIMUM_NUMBER_OF_NODES_FOR_NOT_GATE	2
+#define NUMBER_OF_NODES_FOR_NOT_GATE	2
 
 #define SET_NODE_PARAMETERS					2
 #define	OUT_NODE_PARAMETERS					1
@@ -296,9 +295,9 @@ bool GateGenerator::parse_input_string(std::string inputString){
 			case ADD_GATE_STATE:{
 				switch(currentGateType){
 					case NOT_GATE:{
-						if((buffer.size() - 1) > MAXIMUM_NUMBER_OF_NODES_FOR_NOT_GATE){
+						if((buffer.size() - 1) > NUMBER_OF_NODES_FOR_NOT_GATE){
 							error = TOO_MUCH_PARAMETERS_ERROR;
-						}else if((buffer.size() - 1) < MINIMUM_NUMBER_OF_NODES_FOR_NOT_GATE){
+						}else if((buffer.size() - 1) < NUMBER_OF_NODES_FOR_NOT_GATE){
 							error = TOO_FEW_PARAMETERS_ERROR;
 						}
 						break;
