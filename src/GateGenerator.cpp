@@ -93,6 +93,8 @@ Error_t GateGenerator::create_node(std::string nodeName, Node *&outNode) {
 
 	if(outNode == nullptr){
 		rtnError = CREATE_NODE_ERROR;
+	}else{
+		nodeMap.insert(std::make_pair(nodeName, outNode));
 	}
 
 	return rtnError;
@@ -167,32 +169,34 @@ Error_t GateGenerator::start_simulation(){
 	bool isSimulationCompleted;
 	bool isGateSimulated;
 
-	do {
+	 do{
+
 		isSimulationCompleted = true;
 		isGateSimulated = false;
 
 		for (auto itr = gateSet.begin(); itr != gateSet.end(); itr++) {
-			TRACE_PRINT("Simulating Gate");
 
 			// Check to see if it was simulated before or not
 			if ((*itr)->is_gate_simulated() == false) {
-				TRACE_PRINT("A Gate Has Been Simulated");
+				TRACE_PRINT("This Gate Has never Been Simulated before");
 
 				if((*itr)->simulateGate() == true){
 					isGateSimulated = true;
 				}
 
 				isSimulationCompleted = false;
+			}else{
+				TRACE_PRINT("This Gate Has Been Simulated before");
 			}
 		}
 
 		// Not a single gate in the iteration have been simulated successfully
-		if(isGateSimulated == false){
+		if(isGateSimulated == false && isSimulationCompleted == false){
 			rtnError = SIMULATION_ERROR;
 			break;
 		}
 
-	} while (isSimulationCompleted == false);
+	}while (isSimulationCompleted == false);
 
 	return rtnError;
 }

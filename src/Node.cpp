@@ -8,8 +8,6 @@
 #include <iostream>
 #include <string>
 
-#include <map>
-
 #include "Trace.h"
 #include "Node.h"
 
@@ -31,12 +29,6 @@ bool Node::operator^ (const Node& lhs){
 	return ((this->value) ^ (lhs.value));
 }
 
-
-Node::Node(const std::string& name, const bool& value)
-	: name{name}, assigned{true}, value{value}
-{
-
-}
 
 Node::Node(const std::string& name)
 	: name{name}, assigned{false}, value{false}

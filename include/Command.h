@@ -27,7 +27,7 @@ enum Command_t {
 
 class Command {
 	private:
-		static std::map<std::string, Command_t> commandMap;
+		static const std::map<std::string, Command_t> commandMap;
 	public:
 		static Command_t string_to_command(const std::string& s);
 };

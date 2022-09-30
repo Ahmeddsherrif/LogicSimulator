@@ -10,7 +10,7 @@
 
 #include "Command.h"
 
-std::map<std::string, Command_t> Command::commandMap{
+const std::map<std::string, Command_t> Command::commandMap{
 		{ "AND", AND_COMMAND },
 		{ "OR", OR_COMMAND },
 		{ "NOT", NOT_COMMAND},

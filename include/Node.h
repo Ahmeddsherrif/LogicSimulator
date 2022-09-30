@@ -20,7 +20,6 @@ class Node {
 
 	public:
 		Node(const std::string& name);
-		Node(const std::string& name, const bool& value);
 
 		void setValue(bool value);
 		bool getValue() const;
