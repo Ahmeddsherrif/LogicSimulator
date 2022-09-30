@@ -27,21 +27,16 @@
 #include "Simulation.h"
 
 #define MINIMUM_NUMBER_OF_NODES_FOR_ANY_GATE	3
-//NO MAXIMUM
 
 #define MAXIMUM_NUMBER_OF_NODES_FOR_NOT_GATE	2
 #define MINIMUM_NUMBER_OF_NODES_FOR_NOT_GATE	2
 
-
 #define SET_NODE_PARAMETERS					2
-
 #define	OUT_NODE_PARAMETERS					1
 
 std::set<Gate *> GateGenerator::gateSet;
 std::map<std::string, Node *> GateGenerator::nodeMap;
-
 std::vector <Node *> GateGenerator::nodeVector;
-
 std::vector<Node *> GateGenerator::inputNodevector;
 std::vector<Node *> GateGenerator::outputNodevector;
 
@@ -126,7 +121,6 @@ Error_t GateGenerator::create_node(std::string nodeName, Node *&outNode) {
 
 Error_t GateGenerator::out_node(std::string nodeToOutput){
 	Error_t rtnError = NO_ERROR;
-
 	Node *tempNode = nullptr;
 
 	if(nodeToOutput == "ALL"){
@@ -188,20 +182,13 @@ Error_t GateGenerator::set_node(Node *&node, std::string nodeValue){
 bool GateGenerator::parse_input_string(std::string inputString){
 
 	bool rtnValue = true;
-
 	std::vector<std::string> buffer;
 	State_t state;
-
 	Error_t error;
-
 	Node *currentNode = nullptr;
 	Gate *currentGate = nullptr;
-
 	Gate_t currentGateType = NONE;
-
 	std::vector<Node *> nodeBuffer;
-
-
 	bool isLineEnded = false;
 
 
@@ -323,9 +310,24 @@ bool GateGenerator::parse_input_string(std::string inputString){
 				}
 
 				if(error == NO_ERROR){
-					error = create_gate(currentGateType, currentGate);
-					if(error == NO_ERROR){
-						state = ADD_NODE_STATE;
+
+					// check collision
+					Node * collisionNode = nullptr;
+					error = getNode(buffer.back(), collisionNode);
+					if(error == NO_ERROR && collisionNode->isOutput()==true){
+						error = NODE_COLLISION_ERROR;
+					}else{
+						error = NO_ERROR;
+					}
+
+
+					if (error == NO_ERROR) {
+						error = create_gate(currentGateType, currentGate);
+						if(error == NO_ERROR){
+							state = ADD_NODE_STATE;
+						}else{
+							state = ERROR_STATE;
+						}
 					}else{
 						state = ERROR_STATE;
 					}
@@ -357,6 +359,7 @@ bool GateGenerator::parse_input_string(std::string inputString){
 				}
 
 				itr++;	//to fetch the next instruction
+
 				if(error == NO_ERROR){						// NODE ASSIGNED TO A GATE
 					if(itr != buffer.end()){
 						state = ADD_NODE_STATE;
@@ -432,6 +435,12 @@ bool GateGenerator::parse_input_string(std::string inputString){
 
 			case ERROR_STATE: {
 				TRACE_PRINT("This Line is corrupted");
+
+				if(currentGate != nullptr){
+					delete currentGate;
+					currentGate = nullptr;
+				}
+
 				std::cout << "> ERROR: ";
 				switch(error){
 					case CREATE_GATE_ERROR:{
@@ -466,19 +475,15 @@ bool GateGenerator::parse_input_string(std::string inputString){
 						std::cout << "THE NODE YOU ARE TRYING TO VIEW IS NOT FOUND" << std::endl;
 						break;
 					}
+					case NODE_COLLISION_ERROR:{
+						std::cout << "THE ENTERED OUTPUT NODE IS ALREADY AN OUTPUT NODE FOR ANOTHER GATE" << std::endl;
+						break;
+					}
 					case TOO_FEW_PARAMETERS_ERROR:{
-						if(currentGate != nullptr){
-							delete currentGate;
-							currentGate = nullptr;
-						}
 						std::cout << "TOO FEW PARAMETERS" << std::endl;
 						break;
 					}
 					case TOO_MUCH_PARAMETERS_ERROR:{
-						if(currentGate != nullptr){
-							delete currentGate;
-							currentGate = nullptr;
-						}
 						std::cout << "TOO MUCH PARAMETERS" << std::endl;
 						break;
 					}
@@ -490,8 +495,6 @@ bool GateGenerator::parse_input_string(std::string inputString){
 						std::cout << "TOTAL SOFTWARE FAILURE, CONTACT SOFTWARE DEVELOPERS" << std::endl;
 						break;
 					}
-
-
 				}
 
 				state = END_LINE_STATE;
@@ -499,7 +502,6 @@ bool GateGenerator::parse_input_string(std::string inputString){
 			}
 
 			case END_LINE_STATE:{
-				TRACE_PRINT("Ending the line");
 				isLineEnded = true;
 				break;
 			}

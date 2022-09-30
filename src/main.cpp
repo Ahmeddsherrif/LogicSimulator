@@ -1,31 +1,4 @@
-//============================================================================
-// Name        : LogicSimulator.cpp
-// Author      : AhmedSherif
-// Version     :
-// Copyright   : Your copyright notice
-// Description : Hello World in C++, Ansi-style
-//============================================================================
-
-#include <iostream>
-#include <stdio.h>
-#include <string>
-#include <vector>
-#include <map>
-#include <set>
-
-
-#include "Trace.h"
-#include "helperfunctions.h"
-#include "Node.h"
-#include "Gate.h"
-#include "AND.h"
-#include "OR.h"
-#include "NOT.h"
-#include "XOR.h"
-
-#include "GateGenerator.h"
-#include "Simulation.h"
-
+#include "logic_simulator.h"
 
 int main() {
 	std::string inputString;
@@ -36,6 +9,3 @@ int main() {
 
 	return 0;
 }
-
-//TODO: RESET IS SIMULATED AFTER SIMULATION IS COMPLETED
-
