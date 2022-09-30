@@ -9,6 +9,7 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <unordered_map>
 #include <vector>
 #include <set>
 
@@ -23,10 +24,14 @@
 #include "NOT.h"
 #include "XOR.h"
 #include "GateGenerator.h"
+#include "Simulation.h"
 
 
 std::set<Gate *> GateGenerator::gateSet;
 std::map<std::string, Node *> GateGenerator::nodeMap;
+
+std::vector <Node *> GateGenerator::nodeVector;
+
 
 Error_t GateGenerator::create_gate(const Gate_t &gateType, Gate *&outGate) {
 	Error_t rtnError = NO_ERROR;
@@ -94,6 +99,7 @@ Error_t GateGenerator::create_node(std::string nodeName, Node *&outNode) {
 		rtnError = CREATE_NODE_ERROR;
 	}else{
 		nodeMap.insert(std::make_pair(nodeName, outNode));
+		nodeVector.push_back(outNode);
 	}
 
 	return rtnError;
@@ -107,8 +113,8 @@ Error_t GateGenerator::out_node(std::string nodeToOutput){
 	Node *tempNode = nullptr;
 
 	if(nodeToOutput == "ALL"){
-		for(auto itr = nodeMap.begin(); itr != nodeMap.end(); itr++){
-			std::cout << *(itr->second) << std::endl;
+		for(auto itr = nodeVector.begin(); itr != nodeVector.end(); itr++){
+			std::cout << **itr << std::endl;
 		}
 	}else{
 
@@ -160,45 +166,45 @@ Error_t GateGenerator::set_node(Node *&node, std::string nodeValue){
 	return rtnError;
 }
 
-Error_t GateGenerator::start_simulation(){
-	TRACE_PRINT("Starting The Simulation ");
-
-	Error_t rtnError = NO_ERROR;
-
-	bool isSimulationCompleted;
-	bool isGateSimulated;
-
-	 do{
-
-		isSimulationCompleted = true;
-		isGateSimulated = false;
-
-		for (auto itr = gateSet.begin(); itr != gateSet.end(); itr++) {
-
-			// Check to see if it was simulated before or not
-			if ((*itr)->is_gate_simulated() == false) {
-				TRACE_PRINT("This Gate Has never Been Simulated before");
-
-				if((*itr)->simulateGate() == true){
-					isGateSimulated = true;
-				}
-
-				isSimulationCompleted = false;
-			}else{
-				TRACE_PRINT("This Gate Has Been Simulated before");
-			}
-		}
-
-		// Not a single gate in the iteration have been simulated successfully
-		if(isGateSimulated == false && isSimulationCompleted == false){
-			rtnError = SIMULATION_ERROR;
-			break;
-		}
-
-	}while (isSimulationCompleted == false);
-
-	return rtnError;
-}
+//Error_t GateGenerator::start_simulation(){
+//	TRACE_PRINT("Starting The Simulation ");
+//
+//	Error_t rtnError = NO_ERROR;
+//
+//	bool isSimulationCompleted;
+//	bool isGateSimulated;
+//
+//	 do{
+//
+//		isSimulationCompleted = true;
+//		isGateSimulated = false;
+//
+//		for (auto itr = gateSet.begin(); itr != gateSet.end(); itr++) {
+//
+//			// Check to see if it was simulated before or not
+//			if ((*itr)->is_gate_simulated() == false) {
+//				TRACE_PRINT("This Gate Has never Been Simulated before");
+//
+//				if((*itr)->simulateGate() == true){
+//					isGateSimulated = true;
+//				}
+//
+//				isSimulationCompleted = false;
+//			}else{
+//				TRACE_PRINT("This Gate Has Been Simulated before");
+//			}
+//		}
+//
+//		// Not a single gate in the iteration have been simulated successfully
+//		if(isGateSimulated == false && isSimulationCompleted == false){
+//			rtnError = SIMULATION_ERROR;
+//			break;
+//		}
+//
+//	}while (isSimulationCompleted == false);
+//
+//	return rtnError;
+//}
 
 
 
@@ -297,13 +303,15 @@ bool GateGenerator::parse_input_string(std::string inputString){
 					}
 					case SIM_COMMAND: {
 						TRACE_PRINT("You Have Entered SIM");
-						error = start_simulation();
-						if(error == NO_ERROR){
+
+						if(Simulation::start(gateSet) == true){
 							TRACE_PRINT("Simulation Completed!");
 							state = END_LINE_STATE;
 						}else{
+							error = SIMULATION_ERROR;
 							state = ERROR_STATE;
 						}
+
 						break;
 					}
 					case OUT_COMMAND: {
@@ -466,6 +474,7 @@ bool GateGenerator::parse_input_string(std::string inputString){
 				}
 
 				nodeMap.clear();
+				nodeVector.clear();
 
 				TRACE_PRINT("HASTA LA VISTA!");
 				rtnValue = false;

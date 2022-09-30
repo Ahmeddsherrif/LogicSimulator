@@ -10,7 +10,7 @@
 
 class Simulation {
 	public:
-		Simulation();
+		static bool start(std::set<Gate *> &gateSet);
 };
 
 #endif /* SIMULATION_H_ */
