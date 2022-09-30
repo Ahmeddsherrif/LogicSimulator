@@ -24,8 +24,9 @@ const std::map<std::string, Command_t> Command::commandMap{
 		{ "TERMINATE", TERMINATE_COMMAND }
 };
 
-Command_t Command::string_to_command(const std::string& s){
+Command_t Command::string_to_command(std::string& s){
 	Command_t rtnCommand;
+
 	auto commandIterator = commandMap.find(s);
 
 	if (commandIterator != commandMap.end()){

@@ -10,16 +10,19 @@
 
 enum State_t {
 	EXECUTE_COMMAND_STATE,
+	ADD_GATE_STATE,
 	ADD_NODE_STATE,
 	SET_NODE_STATE,
 	OUT_NODE_STATE,
 	SET_VALUE_STATE,
+	SIMULATION_STATE,
 	ERROR_STATE,
 	END_LINE_STATE,
-	END_PARSE_STATE
+	TERMINATE_STATE
 };
 
 enum Gate_t {
+	NONE,
 	AND_GATE,
 	OR_GATE,
 	NOT_GATE,
@@ -36,8 +39,12 @@ enum Error_t {
 	SIMULATION_ERROR,
 	COMMAND_ERROR,
 	GET_NODE_ERROR,
-	SET_NODE_ERROR,
-	OUT_NODE_ERROR
+	SET_NODE_VALUE_ERROR,
+	SET_NODE_OUTPUT_ERROR,
+	OUT_NODE_ERROR,
+	TOO_MUCH_PARAMETERS_ERROR,
+	TOO_FEW_PARAMETERS_ERROR,
+	PASSING_EMPTY_STRING_ERROR
 };
 
 class GateGenerator {
@@ -47,6 +54,9 @@ class GateGenerator {
 
 		static std::map<std::string, Node *> nodeMap;
 		static std::vector<Node *> nodeVector;
+
+		static std::vector<Node *> inputNodevector;
+		static std::vector<Node *> outputNodevector;
 
 		static Error_t create_gate(const Gate_t &gateType, Gate *&outGate);
 		static Error_t create_node(std::string nodeName, Node *&outNode);

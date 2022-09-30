@@ -26,11 +26,24 @@
 #include "GateGenerator.h"
 #include "Simulation.h"
 
+#define MINIMUM_NUMBER_OF_NODES_FOR_ANY_GATE	3
+//NO MAXIMUM
+
+#define MAXIMUM_NUMBER_OF_NODES_FOR_NOT_GATE	2
+#define MINIMUM_NUMBER_OF_NODES_FOR_NOT_GATE	2
+
+
+#define SET_NODE_PARAMETERS					2
+
+#define	OUT_NODE_PARAMETERS					1
 
 std::set<Gate *> GateGenerator::gateSet;
 std::map<std::string, Node *> GateGenerator::nodeMap;
 
 std::vector <Node *> GateGenerator::nodeVector;
+
+std::vector<Node *> GateGenerator::inputNodevector;
+std::vector<Node *> GateGenerator::outputNodevector;
 
 
 Error_t GateGenerator::create_gate(const Gate_t &gateType, Gate *&outGate) {
@@ -75,6 +88,10 @@ Error_t GateGenerator::create_gate(const Gate_t &gateType, Gate *&outGate) {
 			TRACE_PRINT("You want to create an XNOR Gate ");
 			outGate = new XOR(true);
 			break;
+		}
+
+		default:{
+
 		}
 
 	}
@@ -150,17 +167,18 @@ Error_t GateGenerator::set_node(Node *&node, std::string nodeValue){
 
 	Error_t rtnError = NO_ERROR;
 
-	if(nodeValue == "1"){
-		node->setValue(true);
-		TRACE_PRINT("Node Value is set to true");
-	}
-	else if (nodeValue == "0"){
-		node->setValue(false);
-		TRACE_PRINT("Node Value is set to false");
-	}
-	else{
-		rtnError = SET_NODE_ERROR;
-		TRACE_PRINT("Error Setting the node value");
+	if (node->isOutput() == false) {
+		if(nodeValue == "1"){
+			node->setValue(true);
+		}
+		else if (nodeValue == "0"){
+			node->setValue(false);
+		}
+		else{
+			rtnError = SET_NODE_VALUE_ERROR;
+		}
+	}else{
+		rtnError = SET_NODE_OUTPUT_ERROR;
 	}
 
 	return rtnError;
@@ -171,88 +189,79 @@ bool GateGenerator::parse_input_string(std::string inputString){
 
 	bool rtnValue = true;
 
-	std::vector<std::string> buffer = helper_functions::split_string(inputString, ' ');
+	std::vector<std::string> buffer;
+	State_t state;
 
-	State_t state = EXECUTE_COMMAND_STATE;
-	Error_t error = NO_ERROR;
+	Error_t error;
 
 	Node *currentNode = nullptr;
 	Gate *currentGate = nullptr;
 
+	Gate_t currentGateType = NONE;
+
 	std::vector<Node *> nodeBuffer;
 
-	for (auto itr = buffer.begin(); itr!= buffer.end() + 1 ; itr++) {
+
+	bool isLineEnded = false;
+
+
+	if(inputString.empty() == false){
+		buffer= helper_functions::split_string(inputString, ' ');
+
+		error = NO_ERROR;
+		state = EXECUTE_COMMAND_STATE;
+
+	}else{
+		error = PASSING_EMPTY_STRING_ERROR;
+		state = ERROR_STATE;
+	}
+
+	auto itr = buffer.begin();
+
+	do{
 		switch (state) {
 			case EXECUTE_COMMAND_STATE: {
 				switch (Command::string_to_command(*itr)) {
 					case AND_COMMAND: {
 						TRACE_PRINT("You Have Entered AND");
-						error = create_gate(AND_GATE, currentGate);
-						if(error == NO_ERROR){
-							state = ADD_NODE_STATE;
-						}else{
-							state = ERROR_STATE;
-						}
+						currentGateType = AND_GATE;
+						state = ADD_GATE_STATE;
 						break;
 					}
 					case OR_COMMAND: {
 						TRACE_PRINT("You Have Entered OR");
-						error = create_gate(OR_GATE, currentGate);
-						if(error == NO_ERROR){
-							state = ADD_NODE_STATE;
-						}else{
-							state = ERROR_STATE;
-						}
+						currentGateType = OR_GATE;
+						state = ADD_GATE_STATE;
 						break;
 					}
 					case NOT_COMMAND: {
 						TRACE_PRINT("You Have Entered NOT");
-						error = create_gate(NOT_GATE, currentGate);
-						if(error == NO_ERROR){
-							state = ADD_NODE_STATE;
-						}else{
-							state = ERROR_STATE;
-						}
+						currentGateType = NOT_GATE;
+						state = ADD_GATE_STATE;
 						break;
 					}
 					case NAND_COMMAND: {
 						TRACE_PRINT("You Have Entered NAND");
-						error = create_gate(NAND_GATE, currentGate);
-						if(error == NO_ERROR){
-							state = ADD_NODE_STATE;
-						}else{
-							state = ERROR_STATE;
-						}
+						currentGateType = NAND_GATE;
+						state = ADD_GATE_STATE;
 						break;
 					}
 					case NOR_COMMAND: {
 						TRACE_PRINT("You Have Entered NOR");
-						error = create_gate(NOR_GATE, currentGate);
-						if(error == NO_ERROR){
-							state = ADD_NODE_STATE;
-						}else{
-							state = ERROR_STATE;
-						}
+						currentGateType = NOR_GATE;
+						state = ADD_GATE_STATE;
 						break;
 					}
 					case XOR_COMMAND: {
 						TRACE_PRINT("You Have Entered XOR");
-						error = create_gate(XOR_GATE, currentGate);
-						if(error == NO_ERROR){
-							state = ADD_NODE_STATE;
-						}else{
-							state = ERROR_STATE;
-						}
+						currentGateType = XOR_GATE;
+						state = ADD_GATE_STATE;
 						break;
 					}
 					case XNOR_COMMAND: {
 						TRACE_PRINT("You Have Entered XNOR");
-						error = create_gate(XNOR_GATE, currentGate);
-						if(error == NO_ERROR){
-							state = ADD_NODE_STATE;
-						}else{
-							state = ERROR_STATE;
-						}
+						currentGateType = XNOR_GATE;
+						state = ADD_GATE_STATE;
 						break;
 					}
 					case SET_COMMAND: {
@@ -262,15 +271,7 @@ bool GateGenerator::parse_input_string(std::string inputString){
 					}
 					case SIM_COMMAND: {
 						TRACE_PRINT("You Have Entered SIM");
-
-						if(Simulation::start(gateSet) == true){
-							TRACE_PRINT("Simulation Completed!");
-							state = END_LINE_STATE;
-						}else{
-							error = SIMULATION_ERROR;
-							state = ERROR_STATE;
-						}
-
+						state = SIMULATION_STATE;
 						break;
 					}
 					case OUT_COMMAND: {
@@ -278,25 +279,69 @@ bool GateGenerator::parse_input_string(std::string inputString){
 						state = OUT_NODE_STATE;
 						break;
 					}
+
 					case INVALID_COMMAND:{
 						error = COMMAND_ERROR;
 						state = ERROR_STATE;
 						break;
 					}
 					case TERMINATE_COMMAND:{
-						state = END_PARSE_STATE;
+						state = TERMINATE_STATE;
 						break;
 					}
 				}
+
+				itr++;		//to fetch the next instruction
+
+				break;
+			}
+
+			case SIMULATION_STATE:{
+				if(Simulation::start(gateSet) == true){
+					TRACE_PRINT("Simulation Completed!");
+					state = END_LINE_STATE;
+				}else{
+					error = SIMULATION_ERROR;
+					state = ERROR_STATE;
+				}
+				break;
+			}
+			case ADD_GATE_STATE:{
+				switch(currentGateType){
+					case NOT_GATE:{
+						if((buffer.size() - 1) > MAXIMUM_NUMBER_OF_NODES_FOR_NOT_GATE){
+							error = TOO_MUCH_PARAMETERS_ERROR;
+						}else if((buffer.size() - 1) < MINIMUM_NUMBER_OF_NODES_FOR_NOT_GATE){
+							error = TOO_FEW_PARAMETERS_ERROR;
+						}
+					}
+					default:{
+						if((buffer.size() - 1) < MINIMUM_NUMBER_OF_NODES_FOR_ANY_GATE){
+							error = TOO_FEW_PARAMETERS_ERROR;
+						}
+					}
+				}
+
+				if(error == NO_ERROR){
+					error = create_gate(currentGateType, currentGate);
+					if(error == NO_ERROR){
+						state = ADD_NODE_STATE;
+					}else{
+						state = ERROR_STATE;
+					}
+				}else{
+					state = ERROR_STATE;
+				}
+
 				break;
 			}
 
 			case ADD_NODE_STATE: {
 				TRACE_PRINT("You want to create a Node");
-
 				TRACE_PRINT("Searching if the Node Exists....");
 
 				error = getNode(*itr, currentNode);
+
 
 				if(error == NO_ERROR){
 					TRACE_PRINT("MATCH FOUND!");
@@ -311,54 +356,83 @@ bool GateGenerator::parse_input_string(std::string inputString){
 					}
 				}
 
-				if(error == NO_ERROR){
-					if(itr + 1 != buffer.end()){
+				itr++;	//to fetch the next instruction
+				if(error == NO_ERROR){						// NODE ASSIGNED TO A GATE
+					if(itr != buffer.end()){
 						state = ADD_NODE_STATE;
 					}else{
 						currentGate->setNodes(nodeBuffer);
 						gateSet.insert(currentGate);
 						state = END_LINE_STATE;
 					}
-				}else{
-					state = ERROR_STATE;
 				}
 
 				break;
 			}
 
 			case OUT_NODE_STATE: {
-				error = out_node(*itr);
+				if((buffer.size() - 1) > OUT_NODE_PARAMETERS){
+					error = TOO_MUCH_PARAMETERS_ERROR;
+				}else if ((buffer.size() - 1) < OUT_NODE_PARAMETERS){
+					error = TOO_FEW_PARAMETERS_ERROR;
+				}
+
 				if(error == NO_ERROR){
-					state = END_LINE_STATE;
+					error = out_node(*itr);
+					if(error == NO_ERROR){
+						state = END_LINE_STATE;
+					}else{
+						state = ERROR_STATE;
+					}
 				}else{
 					state = ERROR_STATE;
 				}
+				itr++;
 				break;
 			}
 
 			case SET_NODE_STATE: {
-				error = getNode(*itr, currentNode);
+
+				if((buffer.size() - 1) > SET_NODE_PARAMETERS){
+					error = TOO_MUCH_PARAMETERS_ERROR;
+				}else if ((buffer.size() - 1) < SET_NODE_PARAMETERS){
+					error = TOO_FEW_PARAMETERS_ERROR;
+				}
+
+
 				if(error == NO_ERROR){
-					state = SET_VALUE_STATE;
+					error = getNode(*itr, currentNode);
+
+
+					if(error == NO_ERROR){
+						state = SET_VALUE_STATE;
+					}else{
+						state = ERROR_STATE;
+					}
 				}else{
 					state = ERROR_STATE;
 				}
+
+				itr++;
 				break;
 			}
 
 			case SET_VALUE_STATE: {
 				error = set_node(currentNode, *itr);
+
 				if(error == NO_ERROR){
 					state = END_LINE_STATE;
 				}else{
 					state = ERROR_STATE;
 				}
+
+				itr++;
 				break;
 			}
 
 			case ERROR_STATE: {
 				TRACE_PRINT("This Line is corrupted");
-
+				std::cout << "> ERROR: ";
 				switch(error){
 					case CREATE_GATE_ERROR:{
 						TRACE_PRINT();
@@ -380,12 +454,36 @@ bool GateGenerator::parse_input_string(std::string inputString){
 						std::cout << "INPUT NODE IS NOT FOUND" << std::endl;
 						break;
 					}
-					case SET_NODE_ERROR:{
+					case SET_NODE_VALUE_ERROR:{
 						std::cout << "NODE VALUE IS UNDIFINED" << std::endl;
+						break;
+					}
+					case SET_NODE_OUTPUT_ERROR:{
+						std::cout << "YOU CAN'T SET AN OUTPUT NODE" << std::endl;
 						break;
 					}
 					case OUT_NODE_ERROR:{
 						std::cout << "THE NODE YOU ARE TRYING TO VIEW IS NOT FOUND" << std::endl;
+						break;
+					}
+					case TOO_FEW_PARAMETERS_ERROR:{
+						if(currentGate != nullptr){
+							delete currentGate;
+							currentGate = nullptr;
+						}
+						std::cout << "TOO FEW PARAMETERS" << std::endl;
+						break;
+					}
+					case TOO_MUCH_PARAMETERS_ERROR:{
+						if(currentGate != nullptr){
+							delete currentGate;
+							currentGate = nullptr;
+						}
+						std::cout << "TOO MUCH PARAMETERS" << std::endl;
+						break;
+					}
+					case PASSING_EMPTY_STRING_ERROR:{
+						std::cout << "YOU HAVN'T ENTERED ANY COMMAND!" << std::endl;
 						break;
 					}
 					case NO_ERROR:{
@@ -402,12 +500,10 @@ bool GateGenerator::parse_input_string(std::string inputString){
 
 			case END_LINE_STATE:{
 				TRACE_PRINT("Ending the line");
-				if(itr != buffer.end()){
-					itr = buffer.end();
-				}
+				isLineEnded = true;
 				break;
 			}
-			case END_PARSE_STATE: {
+			case TERMINATE_STATE: {
 
 				for (auto itr = gateSet.begin(); itr != gateSet.end(); itr++){
 					TRACE_PRINT("Deleting gate Vector");
@@ -435,7 +531,7 @@ bool GateGenerator::parse_input_string(std::string inputString){
 				break;
 			}
 		}
-	}
+	}while(isLineEnded == false && rtnValue == true);
 
 	return rtnValue;
 }

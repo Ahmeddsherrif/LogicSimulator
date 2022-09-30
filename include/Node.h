@@ -16,7 +16,7 @@ class Node {
 		std::string name;
 		bool assigned;
 		bool value;
-		bool isOutput;
+		bool output;
 
 
 	public:
@@ -25,6 +25,7 @@ class Node {
 		void setValue(bool value);
 		bool getValue() const;
 		void setAsOutput();
+		bool isOutput();
 		bool isAssigned() const;
 
 		bool operator& (const Node& lhs);

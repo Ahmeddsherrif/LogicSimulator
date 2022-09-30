@@ -29,7 +29,7 @@ class Command {
 	private:
 		static const std::map<std::string, Command_t> commandMap;
 	public:
-		static Command_t string_to_command(const std::string& s);
+		static Command_t string_to_command(std::string& s);
 };
 
 #endif /* COMMAND_H_ */
